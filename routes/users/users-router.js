@@ -59,47 +59,65 @@ router.put('/users/:id', restricted, async (req, res) => {
     }
 })
 
-router.get('/jobs', (req, res) => {
-    db.getJobs().then(jobs => {
-        res.status(200).json({jobs});
-    }).catch(err =>res.status(500).json({error: err, message: 'internal server error'}))
+router.get('/jobs', async (req, res) => {
+    const jobs = await db('jobs')
+    res.status(200).json(jobs)
 })
 
-router.post('/restricted/jobs', restricted, (req,res) => {
-    const body = req.body;
-    db.insertJob(body).then(job => {
-        res.status(201).json({message:'added job with the following data!', job: body})
-    }).catch(err=> res.status(500).json({error: err, message: 'internal server error'}))
-});
 
-router.get('/restricted/jobs/:id', restricted, (req,res) => {
-    const id = req.params.id;
-    db.getUserjobs(id).then(jobs => {
-        res.status(200).json(jobs);
-    })
-});
 
-router.get('/restricted/jobs/:id', restricted, (req,res) => {
-    const id = req.params.id;
-    db.getUserJobs(id).then(jobs => {
-        res.status(200).json(jobs);
-    })
-});
+router.post('/jobs', restricted, async (req, res) => {
+    const { jobTitle, description, pay } = req.body
 
-router.delete('/restricted/jobs/:id', restricted, (req,res) => {
-    const id = req.params.id;
-    db.remove(id).then( del => {
-        res.status(200).json({message: 'job has been deleted', del})
-    }).catch(err=> res.status(500).json({err}))
+    if (jobTitle && description && pay) {
+        const result = await db('jobs').insert(req.body)
+        res.status(201).json(result)
+    } else {
+        res.status(422).json({ message: ' We are missing info'})
+    }
+ })
+
+router.get('/jobs/:id', restricted, async (req, res) => {
+    const id = req.params.id
+
+    try {
+        const result = await db('jobs').where({id})
+        if (result) {
+            res.status(200).json(result)
+        } else {
+            res.status(400).json({ message: 'No specific ID found'})
+        }
+    } catch(error) {
+        res.status(500).json(error)
+    }
 })
 
-router.put('/restricted/jobs/:id', restricted, (req,res) => {
-    const id = req.params.id;
-    const body = req.body;
-    db.update(id, body).then(job => {
-        res.status(200).json({message: 'the job has been updated'})
-    }).catch(err=> res.status(500).json({error: err, message: 'internal server error'}))
+router.delete('/jobs/:id', restricted, async (req, res) => {
+    const id = req.params.id
+    const result = await db('jobs').where({id}).delete()
+
+    res.status(200).json(result)
 })
+
+router.put('/jobs/:id', restricted, async (req, res) => {
+    const id = req.params.id  
+    try {
+        const { jobTitle , description , pay } = req.body
+        if ( jobTitle && description && pay) {
+            const updateInfo = await db('jobs').where({id}).update(req.body)
+            if (updateInfo) {
+                res.status(200).json(updateInfo)
+            } else {
+                res.status(404).json({ message: "The user with the specific id does not exist."})
+            }
+        } else {
+           res.status(400).json({ message: "Missing required info"})
+        }
+    } catch(error) {
+        res.status(500).json(error)
+    }
+})
+
 
 
 module.exports = router
