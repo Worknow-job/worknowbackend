@@ -24,32 +24,32 @@ router.post('/register/users', async (req, res) => {
     }
 })
 
-// router.post('/register/driver', async (req, res) => {
-//     let user = req.body
-//     const hash = bcrypt.hashSync(user.password, 12)
-//     user.password = hash
+router.post('/register/workers', async (req, res) => {
+    let user = req.body
+    const hash = bcrypt.hashSync(user.password, 12)
+    user.password = hash
 
-//     const check = await db('driver').where("email", user.email)
+    const check = await db('workers').where("email", user.email)
 
-//     if (check.length > 0) {
-//         res.status(401).json({ message: 'email already exist!!!!!'})
-//     } else {
-//         try{
-//             const result = await db('driver').insert(user)
-//             res.status(201).json(result)
-//         } catch(error) {
-//             res.status(500).json({ message: 'error in database'})
-//         }
-//     }
+    if (check.length > 0) {
+        res.status(401).json({ message: 'email already exist!!!!!'})
+    } else {
+        try{
+            const result = await db('workers').insert(user)
+            res.status(201).json(result)
+        } catch(error) {
+            res.status(500).json({ message: 'error in database'})
+        }
+    }
 
-//     const result = await db('driver').insert(user)
+    const result = await db('workers').insert(user)
 
-//     if (result) {
-//         res.status(201).json(result)
-//     } else {
-//         res.status(500).json({ message: 'error broski'})
-//     }
-// })
+    if (result) {
+        res.status(201).json(result)
+    } else {
+        res.status(500).json({ message: 'error broski'})
+    }
+})
 
 router.post('/login/users', async (req, res) => {
     let body = req.body
@@ -68,22 +68,22 @@ router.post('/login/users', async (req, res) => {
     }
 })
 
-// router.post('/login/driver', async (req, res) => {
-//     let body = req.body
+router.post('/login/workers', async (req, res) => {
+    let body = req.body
 
-//     if (body) {
-//         const driver = await db('driver').where({email: body.email}).first()
+    if (body) {
+        const workers = await db('workers').where({email: body.email}).first()
 
-//         if (driver || bcrypt.compareSync(body.password, driver.password)) {
-//             const token = generateToken(driver)
-//             res.status(200).json({ token, message: `Welcome young master ${driver.firstName}`, driverID: driver.id})
-//         } else {
-//             res.status(401).json({ message: 'Invalid Credentials' })
-//         }
-//     } else {
-//         res.status(500).json({ message: 'error error'})
-//     }
-// })
+        if (workers || bcrypt.compareSync(body.password, workers.password)) {
+            const token = generateToken(workers)
+            res.status(200).json({ token, message: `Welcome young master ${workers.firstName}`, workersID: workers.id})
+        } else {
+            res.status(401).json({ message: 'Invalid Credentials' })
+        }
+    } else {
+        res.status(500).json({ message: 'error error'})
+    }
+})
 
 function generateToken(user) {
     const payload = {
@@ -98,18 +98,18 @@ function generateToken(user) {
     return jwt.sign(payload, jwtSecret, options)
 }
 
-// function generateToken(driver) {
-//     const payload = {
-//         subject: driver.id,
-//         firstName: driver.firstName
-//     }
+function generateToken(workers) {
+    const payload = {
+        subject: workers.id,
+        firstName: workers.firstName
+    }
 
-//     const options = {
-//         expiresIn: '1d'
-//     }
+    const options = {
+        expiresIn: '1d'
+    }
 
-//     return jwt.sign(payload, jwtSecret, options)
-// }
+    return jwt.sign(payload, jwtSecret, options)
+}
 
 
 module.exports = router
