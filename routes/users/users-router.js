@@ -12,7 +12,7 @@ router.get('/users',  async (req, res) => {
     res.status(200).json(users)
 })
 
-router.post('/users', restricted, async (req, res) => {
+router.post('/users', async (req, res) => {
     const { email, password } = req.body
 
     if (email && password) {
@@ -38,14 +38,14 @@ router.get('/users/:id', restricted, async (req, res) => {
     }
 })
 
-router.delete('/users/:id', restricted, async (req, res) => {
+router.delete('/users/:id', async (req, res) => {
     const id = req.params.id
     const result = await db('users').where({id}).delete()
 
     res.status(200).json(result)
 })
 
-router.put('/users/:id', restricted, async (req, res) => {
+router.put('/users/:id', async (req, res) => {
     const id = req.params.id  
     try {
         const { email, password } = req.body
@@ -71,7 +71,7 @@ router.get('/jobs', async (req, res) => {
 
 
 
-router.post('/jobs', restricted, async (req, res) => {
+router.post('/jobs', async (req, res) => {
     const { jobTitle, description, pay } = req.body
 
     if (jobTitle && description && pay) {
@@ -82,7 +82,7 @@ router.post('/jobs', restricted, async (req, res) => {
     }
  })
 
-router.get('/jobs/:id', restricted, async (req, res) => {
+router.get('/jobs/:id', async (req, res) => {
     const id = req.params.id
 
     try {
@@ -97,14 +97,14 @@ router.get('/jobs/:id', restricted, async (req, res) => {
     }
 })
 
-router.delete('/jobs/:id', restricted, async (req, res) => {
+router.delete('/jobs/:id', async (req, res) => {
     const id = req.params.id
     const result = await db('jobs').where({id}).delete()
 
     res.status(200).json(result)
 })
 
-router.put('/jobs/:id', restricted, async (req, res) => {
+router.put('/jobs/:id', async (req, res) => {
     const id = req.params.id  
     try {
         const { jobTitle , description , pay } = req.body
