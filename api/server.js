@@ -16,7 +16,7 @@ server.use(authRouther)
 server.use(workersRouter)
 
 server.get('/', (req, res) => {
-    res.status(200).json({ api: "Worknow server up and running"})
+    res.status(200).json({ api: "WorkToday server up and running"})
 })
 
 module.exports = server
