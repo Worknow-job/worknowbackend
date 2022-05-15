@@ -7,7 +7,7 @@ router.get('/workers', async (req, res) => {
     res.status(200).json(workers)
 })
 
-router.post('/workers', restricted, async (req, res) => {
+router.post('/workers', async (req, res) => {
     const { email, password } = req.body
 
     if (email && password) {
@@ -18,7 +18,7 @@ router.post('/workers', restricted, async (req, res) => {
     }
 })
 
-router.get('/workers/:id', restricted, async (req, res) => {
+router.get('/workers/:id', async (req, res) => {
     const id = req.params.id
 
     try {
@@ -33,14 +33,14 @@ router.get('/workers/:id', restricted, async (req, res) => {
     }
 })
 
-router.delete('/workers/:id', restricted, async (req, res) => {
+router.delete('/workers/:id', async (req, res) => {
     const id = req.params.id
     const result = await db('workers').where({id}).delete()
 
     res.status(200).json(result)
 })
 
-router.put('/workers/:id', restricted, async (req, res) => {
+router.put('/workers/:id', async (req, res) => {
     const id = req.params.id  
     try {
         const { email, password } = req.body
