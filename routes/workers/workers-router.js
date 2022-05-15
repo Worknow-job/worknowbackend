@@ -2,7 +2,7 @@ const router = require('express').Router()
 const db = require('../../data/dbConfig')
 const restricted = require('../auth/restricted-middleware')
 
-router.get('/workers', restricted, async (req, res) => {
+router.get('/workers', async (req, res) => {
     const workers = await db('workers')
     res.status(200).json(workers)
 })
